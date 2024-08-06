@@ -19,10 +19,9 @@ def find_combination_headers(df):
 def process_bom_file(file_path):
     """Processes a BOM Excel file and extracts the required data."""
     try:
-        print(f"Processing file: {file_path}")
         df = pd.read_excel(file_path, sheet_name='Stud - Wastage Calc', header=None, engine='openpyxl')
         headers = find_combination_headers(df)
-        print(f"Found headers at rows: {headers}")
+
 
         if not headers:
             print(f"No headers found in file: {file_path}")
@@ -77,10 +76,10 @@ def compile_final_data(file_paths):
     sortedppdata = rename_stud_dict_keys(sortedppdata)
     if sortedppdata:
         for section_name, data in sortedppdata.items():
-            print(f"Compiled Data for {section_name}:")
+            #print(f"Compiled Data for {section_name}:")
             for item in data:
-                print(f"{item[0]}: {item[1]}")
-
+                #print(f"{item[0]}: {item[1]}")
+                continue
     # Save the processed data to an Excel file
         output_file = 'processed_input_data_bomv1.xlsx'
         save_to_excel(sortedppdata, output_file)
@@ -125,9 +124,10 @@ def adjust_stud_dict_values(stud_dict):
         for sublist in stud_dict[key]:
             # Check if the key is 'Stud2x48Count' or 'Stud2x68Count' and the value is 96
             if key in ['Stud2x48Count', 'Stud2x68Count'] and sublist[0] == 96:
-                continue  # Skip this value
+                sublist[0] *= 1000
             else:
                 sublist[0] += 0.125  # Add 0.125 to the first item in the sublist
+                sublist[0] *= 1000
 
     return stud_dict
 
