@@ -124,10 +124,12 @@ def adjust_stud_dict_values(stud_dict):
         for sublist in stud_dict[key]:
             # Check if the key is 'Stud2x48Count' or 'Stud2x68Count' and the value is 96
             if key in ['Stud2x48Count', 'Stud2x68Count'] and sublist[0] == 96:
-                sublist[0] *= 1000
+                #sublist[0] *= 1000
+                sublist[0] = round(sublist[0])
             else:
-                sublist[0] += 0.125  # Add 0.125 to the first item in the sublist
-                sublist[0] *= 1000
+                #sublist[0] += 0.125  # Add 0.125 to the first item in the sublist
+                #sublist[0] *= 1000
+                sublist[0] = round(sublist[0])
 
     return stud_dict
 

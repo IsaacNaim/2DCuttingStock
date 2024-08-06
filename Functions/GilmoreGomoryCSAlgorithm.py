@@ -12,7 +12,7 @@ def ggcutting_stock_algorithm(stud_dict):
         q = [item[1] for item in items]
         
         # Determine the standard stud length
-        standard_length = int(key.split('x')[-1]) * 12000
+        standard_length = int(key.split('x')[-1]) * 12
 
         print(f"\nProcessing {key} with standard length {standard_length}")
 

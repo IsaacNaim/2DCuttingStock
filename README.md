@@ -26,6 +26,8 @@ The inputs for now will all come from three excel files of the same format(sheet
 
 
 There will be different material optimization algorithms tested for this project, and their links/sources will be listed below as used:
+GilmoreGomoryCSAlgorithm.py = https://scipbook.readthedocs.io/en/latest/bpp.html 
+pywraplpCSalgorithm.py - Just ORtools python Library, pywrap algorithm
 
 The project will be organized with an overall main.py file from which everything is run, and a folder for inputfiles, a folder for the outputfiles, and a folder for the functions.
 
