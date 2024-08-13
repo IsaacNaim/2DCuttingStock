@@ -1,7 +1,8 @@
 import gurobipy as gp
 from gurobipy import GRB, Model, Column, quicksum
 
-EPS = 1e-6
+EPS = 1e-3
+WASTE_TOLERANCE = 0.4  # Allow up to 10% waste tolerance
 
 def ggcutting_stock_algorithm(stud_dict):
     results = {}
@@ -10,11 +11,16 @@ def ggcutting_stock_algorithm(stud_dict):
         # Extract lengths and quantities
         w = [item[0] for item in items]
         q = [item[1] for item in items]
+        print('w')
+        print(w)
+        print('q')
+        print(q)
         
         # Determine the standard stud length
         standard_length = int(key.split('x')[-1]) * 12
+        max_length_with_waste = standard_length * (1 + WASTE_TOLERANCE)
 
-        print(f"\nProcessing {key} with standard length {standard_length}")
+        print(f"\nProcessing {key} with standard length {standard_length} and max length with waste {max_length_with_waste}")
 
         # Initialize the master problem
         master = Model("master")
@@ -44,7 +50,7 @@ def ggcutting_stock_algorithm(stud_dict):
             for i in range(len(w)):
                 y[i] = knapsack.addVar(ub=q[i], vtype="I", name=f"y[{i}]")
             knapsack.update()
-            knapsack.addConstr(quicksum(w[i] * y[i] for i in range(len(w))) <= standard_length, "width")
+            knapsack.addConstr(quicksum(w[i] * y[i] for i in range(len(w))) <= max_length_with_waste, "width")
             knapsack.setObjective(quicksum(pi[i] * y[i] for i in range(len(w))), GRB.MAXIMIZE)
             knapsack.optimize()
 
@@ -61,8 +67,8 @@ def ggcutting_stock_algorithm(stud_dict):
             t.append(pat)
             col = Column()
             for i in range(len(w)):
-                if t[K][i] > 0:
-                    col.addTerms(t[K][i], orders[i])
+                if pat[i] > 0:
+                    col.addTerms(pat[i], orders[i])
             x[K] = master.addVar(obj=1, vtype="I", name=f"x[{K}]", column=col)
             master.update()
             K += 1
@@ -77,7 +83,7 @@ def ggcutting_stock_algorithm(stud_dict):
             for j in range(int(x[k].X + .5)):
                 roll = sorted([w[i] for i in range(len(w)) if t[k][i] > 0 for _ in range(t[k][i])])
                 rolls.append(roll)
-        
+
         rolls.sort()
         results[key] = rolls
 
